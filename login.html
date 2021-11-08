@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login page</title>
+    <style>
+        body{
+            background-color: black;
+        }
+        #navbar{
+            display: flex;
+            align-items: center;
+            background-color: blanchedalmond;
+            margin: auto;
+            height: 50px;
+            gap: 20px;
+            border-radius: 10px;
+        }
+        #menu{
+            margin-left: 10px;
+            margin-right: 1100px;
+        }
+        #container{
+            background-color: blanchedalmond;
+            width: 500px;
+            height: 500px;
+            margin: auto;
+            border-radius: 10px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            padding: 10px;
+            padding-left: 80px;
+        }
+        #heading{
+            text-align: center;
+        }
+        td{
+            width: 150px;
+            height: 50px;
+        }
+        input{
+            width: 170px;
+            height: 30px;
+        }
+        label{
+            font-size: 20px;
+        }
+        button{
+            margin-left: 150px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="body">
+
+        <div id="navbar">
+            <a href="menu.html"><h3 id="menu">Menu</h3></a>
+            <a href="login.html"><h3>Login</h3></a>
+            <a href="signup.html"><h3>Sign Up</h3></a>          
+            
+        </div>
+
+        <div id="container">
+
+            <h1 id="heading">Login</h1>
+            <form onsubmit="Login(event)" id="login-details">
+                <table>
+                    
+                    <tr>
+                        <td><label for="">User Name</label></td>
+                        <td><input id="username" type="text" placeholder="Enter your user name"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="">Password</label></td>
+                        <td><input id="password" type="text" placeholder="Enter your Password"></td>
+                    </tr>
+                    
+                    
+                </table>
+            
+                <button>Login</button>
+            </form>
+            
+            
+
+        </div>
+
+    </div>
+
+</body>
+</html>
+<script>
+
+// alert("ha")
+var data;
+    function Login(e){
+        e.preventDefault();
+
+        let form = document.getElementById("login-details")
+        
+        data = {
+            username : form.username.value,
+            password : form.password.value
+
+        }
+        // alert(data)
+        console.log('data:', data)
+
+        let data_to_send = JSON.stringify(data);
+
+        fetch("https://masai-api-mocker.herokuapp.com/auth/login",{
+            method: "POST",
+            body: data_to_send,
+            headers:{
+                "Content-Type" : "application/json"
+            }
+
+        })
+        .then((res) => {
+            return res.json();
+        })
+        .then((res) => {
+            console.log('res:', res)
+            Fetch_my_data(data.username, res.token)
+            
+        })
+        .catch((err) =>{
+            console.log('err:', err)
+            
+        })
+        
+    }
+
+    function Fetch_my_data(username, token){
+
+        fetch(`https://masai-api-mocker.herokuapp.com/user/${username}`, {
+            headers:{
+                "Content-Type" : "application/json",
+                Authorization : `Bearer ${token}`
+                
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+        .then((res) => {
+            
+            console.log('res:', res)
+            console.log('res.message:', res.message)
+            if(res.message == "Invalid token for user"){
+                alert("Please Check username or password")
+            }else{
+
+                if(localStorage.getItem("food-login-details") === null){
+                    localStorage.setItem("food-login-details", JSON.stringify( [] ))
+                }else{
+                    localStorage.setItem("food-login-details", JSON.stringify( [data] ))
+                    console.log('data:', data)
+                    window.location.href = "index.html";
+                }
+
+            }
+            
+            
+        })
+
+    }
+
+</script>

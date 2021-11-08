@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cart page</title>
+    <style>
+        body{
+            background-color: black;
+        }
+        #navbar{
+            display: flex;
+            align-items: center;
+            background-color: blanchedalmond;
+            margin: auto;
+            height: 50px;
+            gap: 20px;
+            border-radius: 10px;
+        }
+        #menu{
+            margin-left: 10px;
+            margin-right: 900px;
+        }
+        h1{
+            text-align: center;
+            color: red;
+        }
+        #food_menu{
+            margin: auto;
+            border: 1px solid wheat;
+            display: grid;
+            
+            grid-template-columns: repeat(4,20%);
+            color: wheat;
+            grid-gap: 40px;
+            justify-content: center;
+            padding: 3%;
+            width: 1000px;
+            
+            /* border: 1px solid red; */
+            /* padding-left: 100px; */
+        }
+        img{
+            width: 200px;
+        }
+        button{
+            width: 200px;
+            height: 30px;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div id="body">
+        <div id="navbar">
+            <a href="menu.html"><h3 id="menu">Menu</h3></a>
+            <a href="login.html"><h3>Login</h3></a>
+            <a href="signup.html"><h3>Sign Up</h3></a>
+            
+            <button onclick="place()">Place order</button>
+        </div>
+
+        <h1>CART MENU</h1>
+        <div id="food_menu">
+
+        </div>
+    </div>
+
+</body>
+</html>
+<script>
+
+    var li = ["Yout order is accepted", "Your order is being cooked", "your order is ready", "your Order out for delivery"]
+    var c = 0;
+    
+
+    function place(){
+        
+        var tem = setInterval( () => {
+            if(c == li.length-1){
+                localStorage.setItem("food-details", JSON.stringify( [] ))
+                clearInterval(tem)
+            }
+            alert(li[c]);
+            c++;
+        } , 3000)
+        // alert("Yout order is accepted")
+        // alert("Your order is being cooked")
+        // alert("your order is ready")
+        // alert("your Order out for delivery")
+    }
+
+    var container = document.getElementById("food_menu")
+
+    if(localStorage.getItem("food-details") === null){
+        localStorage.setItem("food-details", JSON.stringify( [] ))
+    }
+    
+    // fetch("http://www.themealdb.com/api/json/v1/1/categories.php")
+    //     .then((res) => {
+    //         // console.log('res:', res)
+    //         return res.json();
+    //     })
+    //     .then((res) => {
+    //         console.log('res:', res)
+    //         console.log('res.categories:', typeof(res.categories))
+    //         Show_products(res.categories)
+
+    //     })
+    let food_list = JSON.parse(localStorage.getItem("food-details"));
+    
+    Show_products(food_list)
+
+    function Show_products(food_list){
+        food_list.forEach( ({strCategory, strCategoryThumb, strCategoryDescription}) => {
+            // console.log(strCategory)
+
+            let div = document.createElement("div");
+
+            let name = document.createElement("p");
+                name.innerText = strCategory
+
+            let desc = document.createElement("p");
+                desc.innerText = strCategoryDescription
+
+            let img = document.createElement("img");
+                img.src = strCategoryThumb;
+            
+            // let btn = document.createElement("button");
+            //     btn.innerText="Place order"
+
+            //     btn.onclick = ()=>{
+            //         alert("Your order is accepted")
+                    
+            //     }
+
+            div.append(img, name, desc)
+
+            container.append(div)
+
+        });
+    }
+
+    
+
+</script>
